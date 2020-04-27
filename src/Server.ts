@@ -2,6 +2,7 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import path from "path";
 import helmet from "helmet";
+import bluebird from "bluebird";
 
 import express, { Request, Response, NextFunction } from "express";
 import { BAD_REQUEST } from "http-status-codes";
@@ -10,8 +11,29 @@ import "express-async-errors";
 import BaseRouter from "./routes";
 import logger from "@shared/Logger";
 
+// Import env settings
+require("dotenv").config();
+
 // Init express
 const app = express();
+
+/************************************************************************************
+ *                                 Connect to MongoDB
+ ***********************************************************************************/
+const mongoose = require("mongoose");
+mongoose.Promise = bluebird;
+
+mongoose
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((err: Error) => {
+    console.log(err);
+  });
 
 /************************************************************************************
  *                              Set basic express settings

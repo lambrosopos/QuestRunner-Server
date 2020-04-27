@@ -1,5 +1,16 @@
+# General Ignore Files
 node_modules/
 .DS_Store
+
+# Ignoring lock files
 package-lock.json
 yarn.lock
+
+# Skipping build files
 dist/
+
+# Ignoring Logs
+logs/
+
+# Env
+.env
