@@ -15,6 +15,9 @@
     "@server": "dist/Server"
   },
   "dependencies": {
+    "@types/bluebird": "^3.5.30",
+    "@types/mongoose": "^5.7.14",
+    "bluebird": "^3.7.2",
     "command-line-args": "^5.1.1",
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",
@@ -24,6 +27,7 @@
     "http-status-codes": "^1.4.0",
     "module-alias": "^2.2.2",
     "mongodb": "^3.5.6",
+    "mongoose": "^5.9.10",
     "morgan": "^1.10.0",
     "winston": "^3.2.1"
   },
