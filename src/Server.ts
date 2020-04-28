@@ -3,6 +3,7 @@ import morgan from "morgan";
 import path from "path";
 import helmet from "helmet";
 import bluebird from "bluebird";
+import cors from "cors";
 
 // import flash from "express-flash";
 import express, { Request, Response, NextFunction } from "express";
@@ -43,7 +44,25 @@ mongoose
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-// app.use(flash());
+
+const whitelist = ["http://127.0.0.1:3000", "http://localhost:3000"];
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      // allow requests with no origin
+      if (!origin) return callback(null, true);
+      if (whitelist.indexOf(origin) === -1) {
+        const message =
+          "The CORS policy for this origin doesn't " +
+          "allow access from the particular origin.";
+        return callback(new Error(message), false);
+      }
+      return callback(null, true);
+    },
+    credentials: true,
+  })
+);
 
 // Show routes called in console during development
 if (process.env.NODE_ENV === "development") {

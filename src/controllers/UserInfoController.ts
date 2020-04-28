@@ -34,7 +34,7 @@ export default {
 
           refreshTokenList.push(refreshToken);
 
-          return res.status(OK).json({ accessToken, refreshToken });
+          return res.status(OK).json({ accessToken, refreshToken, user: doc });
         } else {
           return res.status(UNAUTHORIZED).json({ message: "wrong password" });
         }
