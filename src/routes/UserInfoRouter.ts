@@ -3,6 +3,6 @@ import { UserInfoController } from "../controllers";
 
 const router = Router();
 
-router.get("/", UserInfoController.get);
+router.post("/", UserInfoController.post);
 
 module.exports = router;

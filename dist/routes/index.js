@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const controllers_1 = require("../controllers");
 const router = express_1.Router();
 router.use("/user", require("./UserRouter"));
 router.use("/userinfo", require("./UserInfoRouter"));
@@ -8,4 +9,5 @@ router.use("/avatar", require("./AvatarRouter"));
 router.use("/quest", require("./QuestRouter"));
 router.use("/rank", require("./RankRouter"));
 router.use("/items", require("./ItemsRouter"));
+router.get("/quests", controllers_1.QuestController.get);
 exports.default = router;
