@@ -12,7 +12,7 @@ export default {
       password,
     };
 
-    User.findOne({ "user.email": email }, (err: Error, doc: any) => {
+    User.findOne({ "user.email": email }, (err: any, doc: any) => {
       if (err) res.sendStatus(BAD_REQUEST);
       if (!doc) {
         User.create({ user: tempUser }, (err: Error, user: any) => {

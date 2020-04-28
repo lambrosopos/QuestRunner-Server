@@ -4,6 +4,7 @@ import path from "path";
 import helmet from "helmet";
 import bluebird from "bluebird";
 
+// import flash from "express-flash";
 import express, { Request, Response, NextFunction } from "express";
 import { BAD_REQUEST } from "http-status-codes";
 import "express-async-errors";
@@ -14,7 +15,7 @@ import logger from "@shared/Logger";
 // Import env settings
 require("dotenv").config();
 
-// Init express
+// Init expressz
 const app = express();
 
 /************************************************************************************
@@ -42,6 +43,7 @@ mongoose
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+// app.use(flash());
 
 // Show routes called in console during development
 if (process.env.NODE_ENV === "development") {

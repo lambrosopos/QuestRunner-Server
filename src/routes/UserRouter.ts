@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { UserController } from "../controllers";
+import { authenticateJWT } from "../middlewares/jwtAuthenticator";
 const router = Router();
 
 router.post("/", UserController.post);
-router.post("/", UserController.patch);
+router.patch("/", authenticateJWT, UserController.patch);
 
 module.exports = router;
