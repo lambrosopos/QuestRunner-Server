@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { RankController } from "../controllers";
+import { RankController } from "@controllers/";
 const router = Router();
 
 router.get("/", RankController.get);

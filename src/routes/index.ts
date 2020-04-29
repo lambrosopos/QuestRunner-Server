@@ -1,8 +1,8 @@
 import { Router } from "express";
 
 // For simple get routes
-import { QuestController, UserController } from "../controllers";
-import { authenticateJWT } from "src/middlewares/jwtAuthenticator";
+import { QuestController, UserController } from "@controllers/";
+import { authenticateJWT } from "../middlewares/jwtAuthenticator";
 
 // Init router and path
 const router = Router();

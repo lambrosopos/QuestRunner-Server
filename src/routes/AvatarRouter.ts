@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { AvatarController } from "../controllers";
+import { AvatarController } from "@controllers/";
 
 const router = Router();
 

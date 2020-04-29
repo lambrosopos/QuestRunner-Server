@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { QuestController } from "../controllers";
+import { QuestController } from "@controllers/";
 
 const router = Router();
 
