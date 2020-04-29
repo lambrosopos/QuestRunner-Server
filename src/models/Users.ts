@@ -27,7 +27,6 @@ const UserSchema = new Schema(
     email: {
       type: String,
       required: true,
-      dropDups: true,
       unique: true,
     },
     profilePic: String,
