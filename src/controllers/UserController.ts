@@ -1,6 +1,22 @@
 import { Request, Response } from "express";
-import { OK, BAD_REQUEST, NOT_FOUND, CREATED } from "http-status-codes";
+import {
+  OK,
+  BAD_REQUEST,
+  NOT_FOUND,
+  CREATED,
+  UNAUTHORIZED,
+} from "http-status-codes";
 import { User, UserDocument } from "../models/Users";
+import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import {
+  accessTokenSecret,
+  accessTokenExpiresIn,
+  refreshTokenExpiresIn,
+  refreshTokenSecret,
+  refreshTokenList,
+} from "../middlewares/jwtAuthenticator";
 
 export default {
   get: async (req: Request, res: Response) => {
@@ -15,24 +31,55 @@ export default {
       }
     });
   },
-  post: async (req: Request, res: Response) => {
+  postSignin: async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+
+    User.findOne({ email }, async (err: any, doc: any) => {
+      if (err) return res.sendStatus(BAD_REQUEST);
+      if (!doc) {
+        return res.status(NOT_FOUND).json({ message: "user doesn't exist" });
+      } else {
+        bcrypt.compare(password, doc.password, (err, result) => {
+          if (err) return res.status(BAD_REQUEST).send(err);
+          if (result) {
+            const id = doc["_id"];
+
+            const accessToken = jwt.sign({ user: id }, accessTokenSecret, {
+              expiresIn: accessTokenExpiresIn,
+            });
+
+            const refreshToken = jwt.sign({ user: id }, refreshTokenSecret, {
+              expiresIn: refreshTokenExpiresIn,
+            });
+
+            refreshTokenList.push(refreshToken);
+
+            return res.status(OK).json({ accessToken, refreshToken });
+          } else {
+            return res.status(UNAUTHORIZED).json({ message: "wrong password" });
+          }
+        });
+      }
+    });
+  },
+  postSignup: async (req: Request, res: Response) => {
     const { username, email, password } = req.body;
 
-    const tempUser = {
+    let user = new User({
       username,
       email,
       password,
-    };
+    });
 
-    User.findOne({ "user.email": email }, (err: Error, doc: UserDocument) => {
-      if (err) res.sendStatus(BAD_REQUEST);
+    User.findOne({ email }, (err: mongoose.Error, doc: UserDocument) => {
+      if (err) return res.sendStatus(BAD_REQUEST);
       if (!doc) {
-        User.create({ user: tempUser }, (err: Error, user: UserDocument) => {
-          if (err) return res.status(BAD_REQUEST).send(err);
-          res.status(CREATED).json({ message: "successfully added" });
+        user.save((err) => {
+          if (err) return res.status(302).send(err);
+          return res.status(CREATED).json({ message: "successfully added" });
         });
       } else {
-        res.status(302).json({ message: "user already exists" });
+        return res.status(302).json({ message: "user already exists" });
       }
     });
   },
