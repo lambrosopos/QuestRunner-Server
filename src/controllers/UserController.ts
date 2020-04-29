@@ -3,6 +3,18 @@ import { OK, BAD_REQUEST, NOT_FOUND, CREATED } from "http-status-codes";
 import User from "../models/Users";
 
 export default {
+  get: async (req: Request, res: Response) => {
+    const doc_id = req.user.user;
+
+    User.findOne({ _id: doc_id }, (err: Error, doc: Document) => {
+      if (err) return res.sendStatus(NOT_FOUND);
+      if (!doc) {
+        return res.status(NOT_FOUND).json({ message: "user doesn't exist" });
+      } else {
+        return res.status(OK).json(doc);
+      }
+    });
+  },
   post: async (req: Request, res: Response) => {
     const { username, email, password } = req.body;
 
