@@ -17,8 +17,8 @@
       "@entities/*": ["src/entities/*"],
       "@shared/*": ["src/shared/*"],
       "@server": ["src/Server"],
-      "@middlewares/*": ["src/middlewares/*"],
-      "@types/*": ["src/types"]
+      "@types/*": ["src/types"],
+      "@controllers/*": ["src/controllers"]
     },
     "types": ["node"],
     "typeRoots": ["node_modules/@types", "src/types"]
