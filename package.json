@@ -16,10 +16,12 @@
     "@server": "dist/Server"
   },
   "dependencies": {
+    "@types/bcrypt": "^3.0.0",
     "@types/bluebird": "^3.5.30",
     "@types/cors": "^2.8.6",
     "@types/jsonwebtoken": "^8.3.9",
     "@types/mongoose": "^5.7.14",
+    "bcrypt": "^4.0.1",
     "bluebird": "^3.7.2",
     "command-line-args": "^5.1.1",
     "cookie-parser": "^1.4.5",
