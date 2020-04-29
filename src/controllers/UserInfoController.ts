@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { OK, BAD_REQUEST, NOT_FOUND, UNAUTHORIZED } from "http-status-codes";
-import User from "../models/Users";
+import { User } from "../models/Users";
 import jwt from "jsonwebtoken";
 import {
   accessTokenSecret,

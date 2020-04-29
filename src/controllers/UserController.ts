@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { OK, BAD_REQUEST, NOT_FOUND, CREATED } from "http-status-codes";
-import User from "../models/Users";
+import { User, UserDocument } from "../models/Users";
 
 export default {
   get: async (req: Request, res: Response) => {
     const doc_id = req.user.user;
 
-    User.findOne({ _id: doc_id }, (err: Error, doc: Document) => {
+    User.findOne({ _id: doc_id }, (err: Error, doc: UserDocument) => {
       if (err) return res.sendStatus(NOT_FOUND);
       if (!doc) {
         return res.status(NOT_FOUND).json({ message: "user doesn't exist" });
@@ -24,10 +24,10 @@ export default {
       password,
     };
 
-    User.findOne({ "user.email": email }, (err: any, doc: any) => {
+    User.findOne({ "user.email": email }, (err: Error, doc: UserDocument) => {
       if (err) res.sendStatus(BAD_REQUEST);
       if (!doc) {
-        User.create({ user: tempUser }, (err: Error, user: any) => {
+        User.create({ user: tempUser }, (err: Error, user: UserDocument) => {
           if (err) return res.status(BAD_REQUEST).send(err);
           res.status(CREATED).json({ message: "successfully added" });
         });

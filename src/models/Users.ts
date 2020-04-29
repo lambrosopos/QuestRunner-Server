@@ -1,5 +1,26 @@
 import mongoose, { Schema, mongo } from "mongoose";
 
+export type UserDocument = mongoose.Document & {
+  user: {
+    username: string;
+    password: string;
+    email: string;
+    profilePic: string;
+    motto: string;
+    active: {
+      experiencebar: number;
+      background: number;
+      darkmode: boolean;
+    };
+    experience: number;
+    credits: number;
+    quests: [];
+    created_at: Date;
+  };
+  todolist: [];
+  items: object;
+};
+
 const UserSchema = new Schema(
   {
     user: {
@@ -27,6 +48,4 @@ const UserSchema = new Schema(
   { collection: "Users" }
 );
 
-const User = mongoose.model("User", UserSchema);
-
-export default User;
+export const User = mongoose.model("User", UserSchema);

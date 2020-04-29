@@ -5,6 +5,7 @@ const cookie_parser_1 = tslib_1.__importDefault(require("cookie-parser"));
 const morgan_1 = tslib_1.__importDefault(require("morgan"));
 const helmet_1 = tslib_1.__importDefault(require("helmet"));
 const bluebird_1 = tslib_1.__importDefault(require("bluebird"));
+const cors_1 = tslib_1.__importDefault(require("cors"));
 const express_1 = tslib_1.__importDefault(require("express"));
 const http_status_codes_1 = require("http-status-codes");
 require("express-async-errors");
@@ -28,6 +29,20 @@ mongoose
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use(cookie_parser_1.default());
+const whitelist = ["http://127.0.0.1:3000", "http://localhost:3000"];
+app.use(cors_1.default({
+    origin(origin, callback) {
+        if (!origin)
+            return callback(null, true);
+        if (whitelist.indexOf(origin) === -1) {
+            const message = "The CORS policy for this origin doesn't " +
+                "allow access from the particular origin.";
+            return callback(new Error(message), false);
+        }
+        return callback(null, true);
+    },
+    credentials: true,
+}));
 if (process.env.NODE_ENV === "development") {
     app.use(morgan_1.default("dev"));
 }
