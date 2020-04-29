@@ -10,7 +10,7 @@ export const refreshTokenSecret = "@runDev";
 export const refreshTokenList = new Array();
 
 export const authenticateJWT = (
-  req: Request,
+  req: any,
   res: Response,
   next: NextFunction
 ) => {
@@ -19,10 +19,9 @@ export const authenticateJWT = (
   if (authHeader) {
     const tokenToVerify = authHeader;
 
-    jwt.verify(tokenToVerify, "@questRunner", (err, user) => {
+    jwt.verify(tokenToVerify, "@questRunner", (err: any, user: any) => {
       if (err) return res.sendStatus(UNAUTHORIZED);
-
-      req.body = user;
+      req.user = user;
       next();
     });
   } else {
