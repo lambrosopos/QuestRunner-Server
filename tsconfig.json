@@ -17,6 +17,7 @@
       "@entities/*": ["src/entities/*"],
       "@shared/*": ["src/shared/*"],
       "@server": ["src/Server"],
+      "@middlewares/*": ["src/middlewares/*"],
       "@types/*": ["src/types"]
     },
     "types": ["node"],
