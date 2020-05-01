@@ -11,7 +11,7 @@ const ItemSchema = new Schema(
   {
     feature: String,
     category: String,
-    price: Number,
+    price: { type: Number, default: 0 },
     image: String,
     created_at: { type: Date, default: Date.now },
   },
