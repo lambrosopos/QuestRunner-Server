@@ -58,13 +58,12 @@ export default {
       { _id: userID },
       {
         $inc: { credits: item ? -item.price : 0 },
-        $push: { [`items.${item?.category}`]: item ? item : "500" },
+        $push: { [`items.${item?.category}`]: item },
       },
       { new: true },
       (err: any, doc: any) => {
         if (err) return res.status(BAD_REQUEST).send(err);
         if (doc) {
-          console.log(doc);
           return res.sendStatus(OK);
         } else {
           return res.status(NOT_FOUND).json({ message: "user id not found" });
@@ -72,8 +71,35 @@ export default {
       }
     );
   },
-  postActivateItem: (req: Request, res: Response) => {
-    return res.status(OK).end();
+  postActivateItem: async (req: Request, res: Response) => {
+    const itemID = req.query.id;
+    const item = await Item.findById(itemID, (err: any, doc: ItemDocument) => {
+      if (err) return res.status(BAD_REQUEST).send(err);
+      return doc;
+    });
+
+    const userID = req.user.uid;
+    User.findByIdAndUpdate(
+      userID,
+      {
+        $set: {
+          [`active.${item?.category}`]: item,
+        },
+      },
+      {
+        new: true,
+      },
+      (err: any, doc: any) => {
+        if (err) return res.status(BAD_REQUEST).send(err);
+        if (doc) {
+          return res.sendStatus(OK);
+        } else {
+          return res
+            .sendStatus(NOT_FOUND)
+            .json({ message: "user id not found" });
+        }
+      }
+    );
   },
   postAddItem: (req: Request, res: Response) => {
     const itemToAdd = new Item(req.body);
