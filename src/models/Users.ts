@@ -32,8 +32,8 @@ const UserSchema = new Schema(
     profilePic: { type: String, default: "" },
     motto: { type: String, default: "" },
     active: {
-      exp_bar: { type: Number },
-      background: { type: Number },
+      exp_bar: { type: Object },
+      background: { type: Object },
       darkmode: { type: Boolean, default: false },
     },
     experience: { type: Number, default: 0 },
