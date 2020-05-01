@@ -65,7 +65,7 @@ export default {
         if (err) return res.status(BAD_REQUEST).send(err);
         if (doc) {
           console.log(doc);
-          return res.status(OK).json(doc);
+          return res.sendStatus(OK);
         } else {
           return res.status(NOT_FOUND).json({ message: "user id not found" });
         }
