@@ -6,7 +6,7 @@ const router = Router();
 
 router.get("/myitems", authenticateJWT, ItemsController.getMyItems);
 router.get("/storeItems", ItemsController.getStoreItems);
-router.post("/purchase", ItemsController.postPurchaseItem);
+router.post("/purchase", authenticateJWT, ItemsController.postPurchaseItem);
 router.post("/active", ItemsController.postActivateItem);
 router.post("/addItem", ItemsController.postAddItem);
 

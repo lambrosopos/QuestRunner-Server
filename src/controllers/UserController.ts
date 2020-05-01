@@ -20,7 +20,7 @@ import {
 
 export default {
   get: async (req: Request, res: Response) => {
-    const doc_id = req.user.user;
+    const doc_id = req.user.uid;
 
     User.findOne({ _id: doc_id }, (err: Error, doc: UserDocument) => {
       if (err) return res.sendStatus(NOT_FOUND);
@@ -44,11 +44,11 @@ export default {
           if (result) {
             const id = doc["_id"];
 
-            const accessToken = jwt.sign({ user: id }, accessTokenSecret, {
+            const accessToken = jwt.sign({ uid: id }, accessTokenSecret, {
               expiresIn: accessTokenExpiresIn,
             });
 
-            const refreshToken = jwt.sign({ user: id }, refreshTokenSecret, {
+            const refreshToken = jwt.sign({ uid: id }, refreshTokenSecret, {
               expiresIn: refreshTokenExpiresIn,
             });
 

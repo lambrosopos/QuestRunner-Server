@@ -40,8 +40,37 @@ export default {
       return res.status(OK).json(sortedDoc);
     });
   },
-  postPurchaseItem: (req: Request, res: Response) => {
-    return res.status(OK).end();
+  postPurchaseItem: async (req: Request, res: Response) => {
+    const itemID = req.query.id;
+    const item = await Item.findById(itemID, (err: any, doc: ItemDocument) => {
+      if (err) return res.status(BAD_REQUEST).send(err);
+      if (doc) {
+        return doc;
+      } else {
+        return res
+          .status(BAD_REQUEST)
+          .json({ message: "No item with id found" });
+      }
+    });
+
+    const userID = req.user.uid;
+    User.findOneAndUpdate(
+      { _id: userID },
+      {
+        $inc: { credits: item ? -item.price : 0 },
+        $push: { [`items.${item?.category}`]: item ? item : "500" },
+      },
+      { new: true },
+      (err: any, doc: any) => {
+        if (err) return res.status(BAD_REQUEST).send(err);
+        if (doc) {
+          console.log(doc);
+          return res.sendStatus(OK);
+        } else {
+          return res.status(NOT_FOUND).json({ message: "user id not found" });
+        }
+      }
+    );
   },
   postActivateItem: (req: Request, res: Response) => {
     return res.status(OK).end();

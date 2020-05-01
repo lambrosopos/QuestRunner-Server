@@ -32,7 +32,7 @@ const UserSchema = new Schema(
     profilePic: { type: String, default: "" },
     motto: { type: String, default: "" },
     active: {
-      experiencebar: { type: Number },
+      exp_bar: { type: Number },
       background: { type: Number },
       darkmode: { type: Boolean, default: false },
     },
@@ -42,7 +42,7 @@ const UserSchema = new Schema(
 
     todolist: Array,
     items: {
-      experiencebar: Array,
+      exp_bar: Array,
       background: Array,
     },
     created_at: { type: Date, default: Date.now },
