@@ -9,7 +9,7 @@ export type ItemDocument = mongoose.Document & {
 
 const ItemSchema = new Schema(
   {
-    name: String,
+    feature: String,
     category: String,
     price: Number,
     image: String,
