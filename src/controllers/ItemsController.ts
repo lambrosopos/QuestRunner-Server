@@ -8,7 +8,6 @@ import {
 } from "http-status-codes";
 import { User, UserDocument } from "@models/Users";
 import { Item, ItemDocument } from "@models/Items";
-import UserDao from "@daos/User/UserDao";
 
 export default {
   getMyItems: (req: Request, res: Response) => {
