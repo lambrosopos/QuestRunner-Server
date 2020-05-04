@@ -1,22 +1,23 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 import {
   OK,
   BAD_REQUEST,
   NOT_FOUND,
   CREATED,
   UNAUTHORIZED,
-} from "http-status-codes";
-import { User, UserDocument } from "../models/Users";
-import mongoose from "mongoose";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+} from 'http-status-codes';
+import { User, UserDocument } from '../models/Users';
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import {
   accessTokenSecret,
   accessTokenExpiresIn,
   refreshTokenExpiresIn,
   refreshTokenSecret,
   refreshTokenList,
-} from "../middlewares/jwtAuthenticator";
+} from '../middlewares/jwtAuthenticator';
+import { info } from 'winston';
 
 export default {
   get: async (req: Request, res: Response) => {
@@ -42,7 +43,7 @@ export default {
         bcrypt.compare(password, doc.password, (err, result) => {
           if (err) return res.status(BAD_REQUEST).send(err);
           if (result) {
-            const id = doc["_id"];
+            const id = doc['_id'];
 
             const accessToken = jwt.sign({ uid: id }, accessTokenSecret, {
               expiresIn: accessTokenExpiresIn,
@@ -56,7 +57,7 @@ export default {
 
             return res.status(OK).json({ accessToken, refreshToken });
           } else {
-            return res.status(UNAUTHORIZED).json({ message: "wrong password" });
+            return res.status(UNAUTHORIZED).json({ message: 'wrong password' });
           }
         });
       }
@@ -76,14 +77,48 @@ export default {
       if (!doc) {
         user.save((err) => {
           if (err) return res.status(302).send(err);
-          return res.status(CREATED).json({ message: "successfully added" });
+          return res.status(CREATED).json({ message: 'successfully added' });
         });
       } else {
-        return res.status(302).json({ message: "user already exists" });
+        return res.status(302).json({ message: 'user already exists' });
       }
     });
   },
-  patch: (req: Request, res: Response) => {
-    return res.status(OK).end();
+  patch: async (req: Request, res: Response) => {
+    const userID = req.user.uid;
+    const updatePW = (infoToChange: {}) => {
+      User.findByIdAndUpdate(
+        userID,
+        { $set: infoToChange },
+        { new: true },
+        (err: any, doc: any) => {
+          if (err) res.status(BAD_REQUEST).send(err);
+          console.log('Updated doc');
+          console.log(doc);
+        }
+      );
+    };
+
+    const infoToChange: {
+      motto?: string;
+      username?: string;
+      password?: string;
+    } = {};
+
+    const { motto, username, password } = req.body;
+    if (motto) infoToChange.motto = motto;
+    if (username) infoToChange.username = username;
+    if (password) {
+      await bcrypt.hash(password, 10, (err: Error, encrypted: string) => {
+        if (err) res.status(BAD_REQUEST).send(err);
+        infoToChange.password = encrypted;
+        console.log(JSON.stringify(infoToChange));
+        updatePW(infoToChange);
+        return res.status(OK).json({ message: 'userinfo edit success' });
+      });
+    } else {
+      updatePW(infoToChange);
+      return res.status(OK).json({ message: 'userinfo edit success' });
+    }
   },
 };
