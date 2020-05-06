@@ -22,7 +22,7 @@ export default {
       }
     });
   },
-  put: (req: Request, res: Response) => {
+  post: (req: Request, res: Response) => {
     if (!req.file) {
       return res.status(BAD_REQUEST).json({ message: 'No file attached' });
     } else {
