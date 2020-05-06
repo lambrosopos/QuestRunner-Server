@@ -1,5 +1,5 @@
-import mongoose, { Schema, mongo } from "mongoose";
-import bcrypt from "bcrypt";
+import mongoose, { Schema, mongo } from 'mongoose';
+import bcrypt from 'bcrypt';
 
 export type UserDocument = mongoose.Document & {
   username: string;
@@ -29,12 +29,12 @@ const UserSchema = new Schema(
       required: true,
       unique: true,
     },
-    profilePic: { type: String, default: "" },
-    motto: { type: String, default: "" },
+    profilePic: { type: String, default: '' },
+    motto: { type: String, default: '' },
     active: {
       exp_bar: { type: Object },
       background: { type: Object },
-      darkmode: { type: Boolean, default: false },
+      darkmode: { type: Object },
     },
     experience: { type: Number, default: 0 },
     credits: { type: Number, default: 0 },
@@ -47,14 +47,14 @@ const UserSchema = new Schema(
     },
     created_at: { type: Date, default: Date.now },
   },
-  { collection: "Users" }
+  { collection: 'Users' }
 );
 
-UserSchema.pre("save", function (next) {
+UserSchema.pre('save', function (next) {
   var user = this as UserDocument;
 
   // only hash the password if it has been modified (or is new)
-  if (!user.isModified("password")) return next();
+  if (!user.isModified('password')) return next();
 
   // generate a salt
   bcrypt.genSalt(10, function (err, salt) {
@@ -81,4 +81,4 @@ UserSchema.methods.comparePassword = function (
   });
 };
 
-export const User = mongoose.model<UserDocument>("User", UserSchema);
+export const User = mongoose.model<UserDocument>('User', UserSchema);
