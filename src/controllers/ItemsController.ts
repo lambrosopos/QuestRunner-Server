@@ -1,13 +1,13 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 import {
   OK,
   BAD_REQUEST,
   NOT_FOUND,
   CONFLICT,
   CREATED,
-} from "http-status-codes";
-import { User, UserDocument } from "@models/Users";
-import { Item, ItemDocument } from "@models/Items";
+} from 'http-status-codes';
+import { User, UserDocument } from '@models/Users';
+import { Item, ItemDocument } from '@models/Items';
 
 export default {
   getMyItems: (req: Request, res: Response) => {
@@ -21,7 +21,7 @@ export default {
           items: doc.items,
         });
       } else {
-        return res.status(NOT_FOUND).json({ message: "User not found" });
+        return res.status(NOT_FOUND).json({ message: 'User not found' });
       }
     });
   },
@@ -48,7 +48,7 @@ export default {
       } else {
         return res
           .status(BAD_REQUEST)
-          .json({ message: "No item with id found" });
+          .json({ message: 'No item with id found' });
       }
     });
 
@@ -65,7 +65,7 @@ export default {
         if (doc) {
           return res.sendStatus(OK);
         } else {
-          return res.status(NOT_FOUND).json({ message: "user id not found" });
+          return res.status(NOT_FOUND).json({ message: 'user id not found' });
         }
       }
     );
@@ -95,22 +95,22 @@ export default {
         } else {
           return res
             .sendStatus(NOT_FOUND)
-            .json({ message: "user id not found" });
+            .json({ message: 'user id not found' });
         }
       }
     );
   },
   postAddItem: (req: Request, res: Response) => {
     const itemToAdd = new Item(req.body);
-    const { feature, category } = req.body;
-    Item.findOne({ feature, category }, (err: any, doc: ItemDocument) => {
+    const { item_name, category } = req.body;
+    Item.findOne({ item_name, category }, (err: any, doc: ItemDocument) => {
       if (err) return res.status(BAD_REQUEST).send(err);
       if (doc) {
-        return res.status(CONFLICT).json({ message: "Item already exists" });
+        return res.status(CONFLICT).json({ message: 'Item already exists' });
       } else {
         itemToAdd.save((err: any) => {
           if (err) return res.status(500).send(err);
-          return res.status(CREATED).json({ message: "Item added" });
+          return res.status(CREATED).json({ message: 'Item added' });
         });
       }
     });
