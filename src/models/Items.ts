@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from 'mongoose';
 
 export type ItemDocument = mongoose.Document & {
   feature: string;
@@ -9,13 +9,13 @@ export type ItemDocument = mongoose.Document & {
 
 const ItemSchema = new Schema(
   {
-    feature: String,
+    item_name: String,
     category: String,
     price: { type: Number, default: 0 },
     image: String,
     created_at: { type: Date, default: Date.now },
   },
-  { collection: "Items" }
+  { collection: 'Items' }
 );
 
-export const Item = mongoose.model<ItemDocument>("Item", ItemSchema);
+export const Item = mongoose.model<ItemDocument>('Item', ItemSchema);
