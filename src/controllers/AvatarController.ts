@@ -14,14 +14,26 @@ export default {
       if (doc) {
         return res
           .status(OK)
-          .json({ messsage: 'Success', url: doc.profilePic });
+          .json({ sucesss: true, messsage: 'Found user', url: doc.profilePic });
       } else {
-        return res.status(NOT_FOUND).json({ message: 'User not found' });
+        return res
+          .status(NOT_FOUND)
+          .json({ success: false, message: 'User not found' });
       }
     });
-    return res.status(OK).end();
   },
   put: (req: Request, res: Response) => {
-    return res.status(OK).end();
+    if (!req.file) {
+      return res.status(BAD_REQUEST).json({ message: 'No file attached' });
+    } else {
+      const finalImg = {
+        original_name: req.file.originalname,
+        contentType: req.file.mimetype,
+        image: req.file.buffer,
+        size: req.file.size,
+      };
+      console.log(finalImg);
+      return res.status(OK).json({ success: true, message: 'saved to s3' });
+    }
   },
 };
