@@ -12,4 +12,5 @@ router.use('/items', require('./ItemsRouter'));
 router.get('/quests', _controllers_1.QuestController.get);
 router.get('/userinfo', jwtAuthenticator_1.authenticateJWT, _controllers_1.UserController.getInfo);
 router.post('/userlogin', _controllers_1.UserController.signin);
+router.get('/myRank', jwtAuthenticator_1.authenticateJWT, _controllers_1.RankController.myRank);
 exports.default = router;
