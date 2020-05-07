@@ -10,7 +10,7 @@ import { User, UserDocument } from '@models/Users';
 import { Item, ItemDocument } from '@models/Items';
 
 export default {
-  getMyItems: (req: Request, res: Response) => {
+  myItems: (req: Request, res: Response) => {
     const id = req.user.uid;
     User.findById(id, (err: any, doc: UserDocument) => {
       if (err) return res.status(BAD_REQUEST).send(err);
@@ -25,7 +25,7 @@ export default {
       }
     });
   },
-  getStoreItems: (req: Request, res: Response) => {
+  store: (req: Request, res: Response) => {
     Item.find((err: any, doc: any) => {
       const sortedDoc = doc.reduce(
         (acc: any, curr: ItemDocument) => ({
@@ -39,7 +39,7 @@ export default {
       return res.status(OK).json(sortedDoc);
     });
   },
-  postPurchaseItem: async (req: Request, res: Response) => {
+  purchase: async (req: Request, res: Response) => {
     const itemID = req.query.id;
     const item = await Item.findById(itemID, (err: any, doc: ItemDocument) => {
       if (err) return res.status(BAD_REQUEST).send(err);
@@ -70,7 +70,7 @@ export default {
       }
     );
   },
-  postActivateItem: async (req: Request, res: Response) => {
+  activate: async (req: Request, res: Response) => {
     const itemID = req.query.id;
     const item = await Item.findById(itemID, (err: any, doc: ItemDocument) => {
       if (err) return res.status(BAD_REQUEST).send(err);
@@ -100,7 +100,7 @@ export default {
       }
     );
   },
-  postAddItem: (req: Request, res: Response) => {
+  add: (req: Request, res: Response) => {
     const itemToAdd = new Item(req.body);
     const { item_name, category } = req.body;
     Item.findOne({ item_name, category }, (err: any, doc: ItemDocument) => {
@@ -112,6 +112,29 @@ export default {
           if (err) return res.status(500).send(err);
           return res.status(CREATED).json({ message: 'Item added' });
         });
+      }
+    });
+  },
+  modify: (req: Request, res: Response) => {
+    const itemToChange = req.body;
+    const itemID = req.query.id;
+    console.log(itemToChange);
+
+    Item.findByIdAndUpdate(itemID, itemToChange, (err: any, doc: any) => {
+      if (err)
+        return res
+          .status(BAD_REQUEST)
+          .json({ message: 'DB error while updating' });
+      if (doc) {
+        console.log('Updated Document');
+        return res
+          .status(OK)
+          .json({ success: true, message: 'successfully updated' });
+      } else {
+        console.log('No document found');
+        return res
+          .status(OK)
+          .json({ success: true, message: 'Item not found' });
       }
     });
   },
