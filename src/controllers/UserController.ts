@@ -20,7 +20,7 @@ import {
 import { info } from 'winston';
 
 export default {
-  get: async (req: Request, res: Response) => {
+  getInfo: async (req: Request, res: Response) => {
     const doc_id = req.user.uid;
 
     User.findOne({ _id: doc_id }, (err: Error, doc: UserDocument) => {
@@ -32,7 +32,7 @@ export default {
       }
     });
   },
-  postSignin: async (req: Request, res: Response) => {
+  signin: async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     User.findOne({ email }, async (err: any, doc: any) => {
@@ -63,7 +63,7 @@ export default {
       }
     });
   },
-  postSignup: async (req: Request, res: Response) => {
+  signup: async (req: Request, res: Response) => {
     const { username, email, password } = req.body;
 
     let user = new User({
@@ -84,7 +84,7 @@ export default {
       }
     });
   },
-  patch: async (req: Request, res: Response) => {
+  modify: async (req: Request, res: Response) => {
     const userID = req.user.uid;
     const updatePW = (infoToChange: {}) => {
       User.findByIdAndUpdate(
