@@ -12,7 +12,7 @@ const ItemSchema = new Schema(
     item_name: String,
     category: String,
     price: { type: Number, default: 0 },
-    image: String,
+    image: { type: String, default: '' },
     created_at: { type: Date, default: Date.now },
   },
   { collection: 'Items' }
