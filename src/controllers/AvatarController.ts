@@ -3,7 +3,14 @@ import { OK, BAD_REQUEST, NOT_FOUND } from 'http-status-codes';
 import { User, UserDocument } from '@models/Users';
 
 import AWS from 'aws-sdk';
-import { config } from 'bluebird';
+
+const { accessKeyId, secretAccessKey, bucketName } = process.env;
+const signedUrlExpireSeconds = 60 * 60;
+const s3 = new AWS.S3({
+  accessKeyId,
+  secretAccessKey,
+  useAccelerateEndpoint: false,
+});
 
 export default {
   get: (req: Request, res: Response) => {
@@ -15,9 +22,26 @@ export default {
           .status(BAD_REQUEST)
           .json({ message: 'DB error in finding ID' });
       if (doc) {
-        return res
-          .status(OK)
-          .json({ sucesss: true, messsage: 'Found user', url: doc.profilePic });
+        const params: any = {
+          Bucket: bucketName,
+          Key: userID,
+        };
+        s3.getObject(params, (err: AWS.AWSError, data: any) => {
+          if (err) {
+            console.log('Error while retrieving bucket object');
+            return res.status(BAD_REQUEST).json({
+              success: false,
+              message: 'Error while retrieving bucket object',
+              err,
+            });
+          } else {
+            return res.status(OK).json({
+              sucesss: true,
+              messsage: 'Found user',
+              url: doc.profilePic,
+            });
+          }
+        });
       } else {
         return res
           .status(NOT_FOUND)
@@ -29,6 +53,8 @@ export default {
     if (!req.file) {
       return res.status(BAD_REQUEST).json({ message: 'No file attached' });
     } else {
+      const userID = req.user.uid;
+
       const finalImg = {
         original_name: req.file.originalname,
         contentType: req.file.mimetype,
@@ -36,51 +62,52 @@ export default {
         size: req.file.size,
       };
 
-      const { accessKeyId, secretAccessKey, bucketName } = process.env;
-      const signedUrlExpireSeconds = 60 * 60;
-      const s3 = new AWS.S3({
-        accessKeyId,
-        secretAccessKey,
-        useAccelerateEndpoint: false,
-      });
-
-      const params = {
+      const params: any = {
         Bucket: bucketName,
-        Key: finalImg.original_name,
+        Key: userID,
         Expires: signedUrlExpireSeconds,
         ACL: 'bucket-owner-full-control',
         ContentType: finalImg.contentType,
+        Body: finalImg.image,
       };
 
-      s3.getSignedUrl('putObject', params, (err: any, url: string) => {
+      s3.putObject(params, (err: AWS.AWSError, data: any) => {
         if (err) {
           console.log('Error getting presigned url from AWS S3');
           return res
             .status(BAD_REQUEST)
-            .json({ success: false, message: 'Pre-signed URL error' });
+            .json({ success: false, message: 'AWS S3 error', err });
         } else {
+          console.log('Successfully uploaded file');
+          console.log(finalImg);
+
+          const AWS_URL =
+            'https://qrunner-avatar.s3.ap-northeast-2.amazonaws.com';
+
+          User.findByIdAndUpdate(
+            userID,
+            {
+              $set: {
+                profilePic: AWS_URL + String(data.ETag).replace(/\"/g, ''),
+              },
+            },
+            { new: true },
+            (err: any, doc: any) => {
+              if (err)
+                return res.status(BAD_REQUEST).json({
+                  success: false,
+                  message: 'Error while updating mongodb document',
+                });
+              console.log('=========   Updated Document   =========');
+              console.log(doc);
+              return res.status(OK).json({
+                success: true,
+                message: 'Successfully updated document',
+              });
+            }
+          );
         }
       });
-      console.log(finalImg);
-      return res.status(OK).json({ success: true, message: 'saved to s3' });
     }
   },
 };
-
-// const AWS = require(‘aws-sdk’);
-// const s3 = new AWS.S3({accessKeyId : config.aws_access_key_id, secretAccessKey : config.aws_secret_access_key, useAccelerateEndpoint: true});
-
-// const params = {Bucket: myBucket, Key: myKey, Expires: signedUrlExpireSeconds, ACL: ‘bucket-owner-full-control’, ContentType:’text/csv’};
-
-// s3.getSignedUrl(‘putObject’, params, function (err, url){
-// if(err){
-//  console.log(‘Error getting presigned url from AWS S3’);
-//  res.json({ success : false, message : ‘Pre-Signed URL error’, urls : fileurls});
-//  }
-//  else{
-//  fileurls[0] = url;
-//  console.log(‘Presigned URL: ‘, fileurls[0]);
-//  res.json({ success : true, message : ‘AWS SDK S3 Pre-signed urls generated successfully.’, urls : fileurls});
-//  }
-// });
-// });
