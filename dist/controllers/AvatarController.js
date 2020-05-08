@@ -14,12 +14,12 @@ const s3 = new aws_sdk_1.default.S3({
 exports.default = {
     get: (req, res) => {
         const userID = req.user.uid;
-        Users_1.User.findById(userID, (err, doc) => {
+        Users_1.User.findById(userID, { profilePic: 1 }, (err, doc) => {
             if (err)
                 return res
                     .status(http_status_codes_1.BAD_REQUEST)
                     .json({ message: 'DB error in finding ID' });
-            if (doc) {
+            if (doc.profilePic) {
                 const params = {
                     Bucket: bucketName,
                     Key: userID,
@@ -38,6 +38,8 @@ exports.default = {
                             sucesss: true,
                             messsage: 'Found user',
                             url: doc.profilePic,
+                            ContentType: data.ContentType,
+                            Body: data.Body,
                         });
                     }
                 });
