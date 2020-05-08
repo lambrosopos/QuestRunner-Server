@@ -16,12 +16,12 @@ export default {
   get: (req: Request, res: Response) => {
     const userID = req.user.uid;
 
-    User.findById(userID, (err: any, doc: UserDocument) => {
+    User.findById(userID, { profilePic: 1 }, (err: any, doc: UserDocument) => {
       if (err)
         return res
           .status(BAD_REQUEST)
           .json({ message: 'DB error in finding ID' });
-      if (doc) {
+      if (doc.profilePic) {
         const params: any = {
           Bucket: bucketName,
           Key: userID,
@@ -39,6 +39,8 @@ export default {
               sucesss: true,
               messsage: 'Found user',
               url: doc.profilePic,
+              ContentType: data.ContentType,
+              Body: data.Body,
             });
           }
         });
