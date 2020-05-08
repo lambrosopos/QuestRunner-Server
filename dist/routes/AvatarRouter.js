@@ -4,7 +4,7 @@ const tslib_1 = require("tslib");
 const multer_1 = tslib_1.__importDefault(require("multer"));
 const express_1 = require("express");
 const _controllers_1 = require("@controllers/");
-const jwtAuthenticator_1 = require("src/middlewares/jwtAuthenticator");
+const jwtAuthenticator_1 = require("../middlewares/jwtAuthenticator");
 const upload = multer_1.default();
 const router = express_1.Router();
 router.get('/', jwtAuthenticator_1.authenticateJWT, _controllers_1.AvatarController.get);
