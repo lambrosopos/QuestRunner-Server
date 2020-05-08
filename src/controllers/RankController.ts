@@ -8,7 +8,7 @@ export default {
 
     const queryResults = await User.find(
       {},
-      { username: 1, profilePic: 1, motto: 1, experience: 1 }
+      { _id: 1, username: 1, profilePic: 1, motto: 1, experience: 1 }
     )
       .sort({ experience: -1 })
       .limit(rankLimit);
