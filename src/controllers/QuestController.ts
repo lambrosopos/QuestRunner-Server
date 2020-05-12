@@ -95,6 +95,7 @@ export default {
       },
       {
         arrayFilters: [{ 'elem._id': questID }],
+        new: true,
       },
       (err: any, doc: any) => {
         if (err)
@@ -118,7 +119,105 @@ export default {
       }
     );
   },
-  checkedOrFinal: (req: Request, res: Response) => {
-    return res.status(OK).end();
+  checkedOrFinal: async (req: Request, res: Response) => {
+    const userID = req.user.uid;
+    const questID = String(req.query.id);
+
+    const currentQuest = await User.findOne(
+      { _id: userID },
+      { quests: 1, _id: 1 },
+      (err: any, doc: any) => {
+        if (err)
+          return res
+            .status(BAD_REQUEST)
+            .json({ success: false, message: 'MongoDB Error' });
+
+        if (doc) {
+          const queriedQuest = doc.quests.filter(
+            (q: any) => q._id === questID
+          )[0];
+
+          console.log('======================================');
+          console.log('Queried Quest');
+          console.log(queriedQuest);
+          console.log('======================================');
+
+          const isChecked = req.query.checked || queriedQuest.checked;
+          const isFinalized = req.query.finalize || queriedQuest.finalize;
+
+          User.findOneAndUpdate(
+            { _id: userID },
+            {
+              $set: {
+                'quests.$[elem].checked': isChecked,
+                'quests.$[elem].finalize': isFinalized,
+              },
+            },
+            {
+              new: true,
+              arrayFilters: [{ 'elem._id': questID }],
+            },
+            (err: any, doc: any) => {
+              if (err)
+                return res
+                  .status(BAD_REQUEST)
+                  .json({ success: false, message: 'MongoDB Error' });
+
+              if (doc) {
+                const updatedQuest = doc.quests.filter(
+                  (q: any) => q._id === questID
+                )[0];
+                console.log('======================================');
+                console.log('Changed Quest');
+                console.log(updatedQuest);
+                console.log('======================================');
+                return res.status(OK).json({
+                  success: true,
+                  message: 'Updated Checked Finalized Quest',
+                  quest: updatedQuest || 'Quest ID not found',
+                });
+              } else {
+                return res
+                  .status(NOT_FOUND)
+                  .json({ success: false, message: 'Data not found' });
+              }
+            }
+          );
+        } else {
+          return res
+            .status(NOT_FOUND)
+            .json({ success: false, message: 'Data not found' });
+        }
+      }
+    );
+  },
+  deleteQuest: (req: Request, res: Response) => {
+    const userID = req.user.uid;
+    const questID = String(req.query.id);
+
+    User.findOneAndUpdate(
+      { _id: userID },
+      {
+        $pull: { quests: { _id: questID } },
+      },
+      { new: true },
+      (err: any, doc: any) => {
+        if (err)
+          return res
+            .status(BAD_REQUEST)
+            .json({ success: false, message: 'MongoDB Error' });
+
+        if (doc) {
+          return res.status(OK).json({
+            success: true,
+            message: 'Deleted Quest',
+          });
+        } else {
+          return res
+            .status(NOT_FOUND)
+            .json({ success: false, message: 'Data not found' });
+        }
+      }
+    );
   },
 };
