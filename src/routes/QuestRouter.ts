@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { QuestController } from '@controllers/';
-import { authenticateJWT } from 'src/middlewares/jwtAuthenticator';
 
 const router = Router();
 

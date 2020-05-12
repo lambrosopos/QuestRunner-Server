@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const http_status_codes_1 = require("http-status-codes");
 const Users_1 = require("@models/Users");
 exports.default = {
-    get: (req, res) => {
+    retrieveQuests: (req, res) => {
         const userID = req.user.uid;
         Users_1.User.findById(userID, { _id: 1, quests: 1 }, (err, doc) => {
             if (err)
@@ -25,7 +25,7 @@ exports.default = {
             }
         });
     },
-    post: (req, res) => {
+    addQuest: (req, res) => {
         const userID = req.user.uid;
         const questID = String(Date.now());
         const newQuest = {
@@ -60,7 +60,7 @@ exports.default = {
             }
         });
     },
-    put: (req, res) => {
+    updateQuest: (req, res) => {
         return res.status(http_status_codes_1.OK).end();
     },
     putChecked: (req, res) => {
