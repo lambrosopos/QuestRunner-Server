@@ -2,10 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const _controllers_1 = require("@controllers/");
-const jwtAuthenticator_1 = require("src/middlewares/jwtAuthenticator");
 const router = express_1.Router();
-router.post('/', jwtAuthenticator_1.authenticateJWT, _controllers_1.QuestController.post);
-router.put('/', _controllers_1.QuestController.put);
+router.post('/', _controllers_1.QuestController.addQuest);
+router.put('/', _controllers_1.QuestController.updateQuest);
 router.put('/checked', _controllers_1.QuestController.putChecked);
 router.put('/finalize', _controllers_1.QuestController.putFinalize);
 module.exports = router;
