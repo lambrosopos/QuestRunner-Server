@@ -1,7 +1,14 @@
 import { Request, Response } from 'express';
-import { OK, BAD_REQUEST, NOT_FOUND } from 'http-status-codes';
+import { OK, BAD_REQUEST, NOT_FOUND, NOT_MODIFIED } from 'http-status-codes';
 import { User, UserDocument } from '@models/Users';
 // const uuidv4 = require('uuid/v4');
+
+const loggingWithTitle = (title: string, logTarget: any) => {
+  console.log('======================================');
+  console.log(title);
+  console.log(logTarget);
+  console.log('======================================');
+};
 
 export default {
   retrieveQuests: (req: Request, res: Response) => {
@@ -122,74 +129,82 @@ export default {
   checkedOrFinal: async (req: Request, res: Response) => {
     const userID = req.user.uid;
     const questID = String(req.query.id);
+    const isChecked = Boolean(req.query.checked);
+    const isFinalized = Boolean(req.query.finalize);
 
-    const currentQuest = await User.findOne(
-      { _id: userID },
-      { quests: 1, _id: 1 },
-      (err: any, doc: any) => {
-        if (err)
-          return res
-            .status(BAD_REQUEST)
-            .json({ success: false, message: 'MongoDB Error' });
+    loggingWithTitle('Is checked', isChecked);
+    loggingWithTitle('Is finalized', isFinalized);
 
-        if (doc) {
-          const queriedQuest = doc.quests.filter(
-            (q: any) => q._id === questID
-          )[0];
+    if (isFinalized) {
+      const rawDoc = await User.findOne({ _id: userID }, { quests: 1 });
 
-          console.log('======================================');
-          console.log('Queried Quest');
-          console.log(queriedQuest);
-          console.log('======================================');
+      let newQuestList = rawDoc?.quests.reduce(
+        (acc: any, q: any) => {
+          if (q._id === questID) {
+            q.checked = isChecked;
+            q.finalize = isFinalized;
+            return [acc[0], q];
+          } else {
+            acc[0].push(q);
+            return acc;
+          }
+        },
+        [[], null]
+      );
 
-          const isChecked = req.query.checked || queriedQuest.checked;
-          const isFinalized = req.query.finalize || queriedQuest.finalize;
+      await User.findOneAndUpdate(
+        { _id: userID },
+        {
+          $inc: { experience: 70, credits: 200 },
+          $set: { quests: newQuestList[0] },
+          $push: { todolist: newQuestList[1] },
+        },
+        { new: true },
+        (err: any, doc: any) => {
+          if (err) {
+            return res
+              .status(BAD_REQUEST)
+              .json({ success: false, message: 'MongoDB Error' });
+          }
 
-          User.findOneAndUpdate(
-            { _id: userID },
-            {
-              $set: {
-                'quests.$[elem].checked': isChecked,
-                'quests.$[elem].finalize': isFinalized,
-              },
-            },
-            {
-              new: true,
-              arrayFilters: [{ 'elem._id': questID }],
-            },
-            (err: any, doc: any) => {
-              if (err)
-                return res
-                  .status(BAD_REQUEST)
-                  .json({ success: false, message: 'MongoDB Error' });
-
-              if (doc) {
-                const updatedQuest = doc.quests.filter(
-                  (q: any) => q._id === questID
-                )[0];
-                console.log('======================================');
-                console.log('Changed Quest');
-                console.log(updatedQuest);
-                console.log('======================================');
-                return res.status(OK).json({
-                  success: true,
-                  message: 'Updated Checked Finalized Quest',
-                  quest: updatedQuest || 'Quest ID not found',
-                });
-              } else {
-                return res
-                  .status(NOT_FOUND)
-                  .json({ success: false, message: 'Data not found' });
-              }
-            }
-          );
-        } else {
-          return res
-            .status(NOT_FOUND)
-            .json({ success: false, message: 'Data not found' });
+          if (doc) {
+            return res
+              .status(OK)
+              .json({ success: true, message: 'Update successful' });
+          } else {
+            return res
+              .status(NOT_MODIFIED)
+              .json({ success: false, message: 'Data not found' });
+          }
         }
-      }
-    );
+      );
+    } else {
+      User.findOneAndUpdate(
+        { _id: userID },
+        { $set: { 'quests.$[elem].checked': isChecked } },
+        {
+          new: true,
+          arrayFilters: [{ 'elem._id': questID }],
+        },
+        (err: any, doc: any) => {
+          if (err) {
+            return res
+              .status(BAD_REQUEST)
+              .json({ success: false, message: 'MongoDB Error' });
+          }
+
+          if (doc) {
+            return res
+              .status(OK)
+              .json({ success: true, message: 'Update successful' });
+          } else {
+            return res
+              .status(NOT_MODIFIED)
+              .json({ success: false, message: 'Data not found' });
+          }
+        }
+      );
+    }
   },
   deleteQuest: (req: Request, res: Response) => {
     const userID = req.user.uid;
