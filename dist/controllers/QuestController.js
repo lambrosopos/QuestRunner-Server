@@ -108,10 +108,8 @@ exports.default = {
         const questID = String(req.query.id);
         const isChecked = Boolean(req.query.checked);
         const isFinalized = Boolean(req.query.finalize);
-        console.log(isChecked);
-        console.log(typeof isChecked);
-        console.log(isFinalized);
-        console.log(typeof isFinalized);
+        loggingWithTitle('Is checked', isChecked);
+        loggingWithTitle('Is finalized', isFinalized);
         if (isFinalized) {
             const rawDoc = yield Users_1.User.findOne({ _id: userID }, { quests: 1 });
             let newQuestList = rawDoc === null || rawDoc === void 0 ? void 0 : rawDoc.quests.reduce((acc, q) => {
@@ -125,7 +123,6 @@ exports.default = {
                     return acc;
                 }
             }, [[], null]);
-            console.log(newQuestList[1]);
             yield Users_1.User.findOneAndUpdate({ _id: userID }, {
                 $inc: { experience: 70, credits: 200 },
                 $set: { quests: newQuestList[0] },
