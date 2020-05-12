@@ -1,6 +1,16 @@
 import mongoose, { Schema, mongo } from 'mongoose';
 import bcrypt from 'bcrypt';
 
+type quest = {
+  _id: string;
+  title: string;
+  contents: string;
+  created_at: string | Date;
+  due_date: string | Date;
+  checked: boolean;
+  finalize: boolean;
+};
+
 export type UserDocument = mongoose.Document & {
   username: string;
   password: string;
@@ -14,9 +24,9 @@ export type UserDocument = mongoose.Document & {
   };
   experience: number;
   credits: number;
-  quests: [];
+  quests: Array<quest>;
   created_at: Date;
-  todolist: [];
+  todolist: Array<quest>;
   items: object;
 };
 
