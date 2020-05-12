@@ -123,7 +123,7 @@ export default {
     const userID = req.user.uid;
     const questID = String(req.query.id);
 
-    const currentQuest = await User.findOne(
+    User.findOne(
       { _id: userID },
       { quests: 1, _id: 1 },
       (err: any, doc: any) => {
@@ -167,10 +167,12 @@ export default {
                 const updatedQuest = doc.quests.filter(
                   (q: any) => q._id === questID
                 )[0];
+
                 console.log('======================================');
                 console.log('Changed Quest');
                 console.log(updatedQuest);
                 console.log('======================================');
+
                 return res.status(OK).json({
                   success: true,
                   message: 'Updated Checked Finalized Quest',
