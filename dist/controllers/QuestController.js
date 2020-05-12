@@ -106,11 +106,11 @@ exports.default = {
     checkedOrFinal: (req, res) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
         const userID = req.user.uid;
         const questID = String(req.query.id);
-        const isChecked = Boolean(req.query.checked);
-        const isFinalized = Boolean(req.query.finalize);
+        const isChecked = req.query.checked;
+        const isFinalized = req.query.finalize;
         loggingWithTitle('Is checked', isChecked);
         loggingWithTitle('Is finalized', isFinalized);
-        if (isFinalized) {
+        if (isFinalized === 'true') {
             const rawDoc = yield Users_1.User.findOne({ _id: userID }, { quests: 1 });
             let newQuestList = rawDoc === null || rawDoc === void 0 ? void 0 : rawDoc.quests.reduce((acc, q) => {
                 if (q._id === questID) {

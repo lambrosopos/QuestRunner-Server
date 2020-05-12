@@ -129,13 +129,13 @@ export default {
   checkedOrFinal: async (req: Request, res: Response) => {
     const userID = req.user.uid;
     const questID = String(req.query.id);
-    const isChecked = Boolean(req.query.checked);
-    const isFinalized = Boolean(req.query.finalize);
+    const isChecked = req.query.checked;
+    const isFinalized = req.query.finalize;
 
     loggingWithTitle('Is checked', isChecked);
     loggingWithTitle('Is finalized', isFinalized);
 
-    if (isFinalized) {
+    if (isFinalized === 'true') {
       const rawDoc = await User.findOne({ _id: userID }, { quests: 1 });
 
       let newQuestList = rawDoc?.quests.reduce(
