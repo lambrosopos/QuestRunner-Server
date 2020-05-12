@@ -9,7 +9,7 @@ router.use('/avatar', require('./AvatarRouter'));
 router.use('/quest', require('./QuestRouter'));
 router.use('/rank', require('./RankRouter'));
 router.use('/items', require('./ItemsRouter'));
-router.get('/quests', _controllers_1.QuestController.get);
+router.get('/quests', jwtAuthenticator_1.authenticateJWT, _controllers_1.QuestController.get);
 router.get('/userinfo', jwtAuthenticator_1.authenticateJWT, _controllers_1.UserController.getInfo);
 router.post('/userlogin', _controllers_1.UserController.signin);
 router.get('/myRank', jwtAuthenticator_1.authenticateJWT, _controllers_1.RankController.myRank);
