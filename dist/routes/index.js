@@ -6,7 +6,7 @@ const jwtAuthenticator_1 = require("../middlewares/jwtAuthenticator");
 const router = express_1.Router();
 router.use('/user', require('./UserRouter'));
 router.use('/avatar', require('./AvatarRouter'));
-router.use('/quest', jwtAuthenticator_1.authenticateJWT, require('./QuestRouter'));
+router.use('/quest', require('./QuestRouter'));
 router.use('/rank', require('./RankRouter'));
 router.use('/items', require('./ItemsRouter'));
 router.get('/quests', jwtAuthenticator_1.authenticateJWT, _controllers_1.QuestController.retrieveQuests);

@@ -10,7 +10,7 @@ const router = Router();
 // Add sub-routes
 router.use('/user', require('./UserRouter'));
 router.use('/avatar', require('./AvatarRouter'));
-router.use('/quest', authenticateJWT, require('./QuestRouter'));
+router.use('/quest', require('./QuestRouter'));
 router.use('/rank', require('./RankRouter'));
 router.use('/items', require('./ItemsRouter'));
 
