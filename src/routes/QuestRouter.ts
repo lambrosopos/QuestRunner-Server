@@ -5,7 +5,6 @@ const router = Router();
 
 router.post('/', QuestController.addQuest);
 router.put('/', QuestController.updateQuest);
-router.put('/checked', QuestController.putChecked);
-router.put('/finalize', QuestController.putFinalize);
+router.patch('/', QuestController.checkedOrFinal);
 
 module.exports = router;

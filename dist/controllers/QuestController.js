@@ -61,7 +61,39 @@ exports.default = {
         });
     },
     updateQuest: (req, res) => {
-        return res.status(http_status_codes_1.OK).end();
+        const userID = req.user.uid;
+        const update = {};
+        if (req.body.title)
+            update['title'] = req.body.title;
+        if (req.body.content)
+            update['contents'] = req.body.content;
+        const questID = req.query.id;
+        Users_1.User.findByIdAndUpdate(userID, {
+            $set: {
+                'quests.$[elem].title': update.title || '',
+                'quests.$[elem].contents': update.contents,
+            },
+        }, {
+            arrayFilters: [{ 'elem._id': questID }],
+        }, (err, doc) => {
+            if (err)
+                return res
+                    .status(http_status_codes_1.BAD_REQUEST)
+                    .json({ success: false, message: 'MongoDB Error' });
+            if (doc) {
+                return res.status(http_status_codes_1.OK).json({
+                    success: true,
+                    message: 'Updated Quest',
+                    quest: doc.quests.filter((q) => q._id === questID)[0] ||
+                        'Quest ID not found',
+                });
+            }
+            else {
+                return res
+                    .status(http_status_codes_1.NOT_FOUND)
+                    .json({ success: false, message: 'Data not found' });
+            }
+        });
     },
     putChecked: (req, res) => {
         return res.status(http_status_codes_1.OK).end();
