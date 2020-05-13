@@ -14,9 +14,31 @@ const UserSchema = new mongoose_1.Schema({
     profilePic: { type: String, default: '' },
     motto: { type: String, default: '' },
     active: {
-        exp_bar: { type: Object },
-        background: { type: Object },
-        darkmode: { type: Object },
+        exp_bar: {
+            type: Object,
+            default: {
+                _id: '5eb22ee884db8e67425366eb',
+                price: 0,
+                item_name: 'default',
+                category: 'exp_bar',
+                image: '',
+                created_at: '2020-05-06T03:28:40.739+00:00',
+                __v: 0,
+            },
+        },
+        background: {
+            type: Object,
+            default: {
+                _id: '5eb22eb684db8e67425366e2',
+                price: 0,
+                item_name: 'default',
+                category: 'background',
+                image: '',
+                created_at: '2020-05-06T03:27:50.591+00:00',
+                __v: 0,
+            },
+        },
+        darkmode: { type: Object, default: {} },
     },
     experience: { type: Number, default: 0 },
     credits: { type: Number, default: 0 },
@@ -27,6 +49,7 @@ const UserSchema = new mongoose_1.Schema({
         background: Array,
     },
     created_at: { type: Date, default: Date.now },
+    darkmode: { type: Boolean, default: false },
 }, { collection: 'Users' });
 UserSchema.pre('save', function (next) {
     var user = this;
