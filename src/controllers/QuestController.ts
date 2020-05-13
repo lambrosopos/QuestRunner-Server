@@ -129,16 +129,22 @@ export default {
   checkedOrFinal: async (req: Request, res: Response) => {
     const userID = req.user.uid;
     const questID = String(req.query.id);
-    const isChecked = req.query.checked;
-    const isFinalized = req.query.finalize;
+    const isChecked = req.query.checked === 'true' ? true : false;
+    const isFinalized = req.query.finalize === 'true' ? true : false;
 
     loggingWithTitle('Is checked', isChecked);
     loggingWithTitle('Is finalized', isFinalized);
 
-    if (isFinalized === 'true') {
-      const rawDoc = await User.findOne({ _id: userID }, { quests: 1 });
+    if (isFinalized === true) {
+      const rawDoc = await User.findOne(
+        { _id: userID },
+        { quests: 1, experience: 1, credits: 1 }
+      );
 
-      let newQuestList = rawDoc?.quests.reduce(
+      loggingWithTitle('Experience', rawDoc?.experience);
+      loggingWithTitle('Credits', rawDoc?.credits);
+
+      let newQuestList = await rawDoc?.quests.reduce(
         (acc: any, q: any) => {
           if (q._id === questID) {
             q.checked = isChecked;
@@ -152,7 +158,9 @@ export default {
         [[], null]
       );
 
-      await User.findOneAndUpdate(
+      loggingWithTitle('Quest to Add to todolist', newQuestList[1]);
+
+      User.findOneAndUpdate(
         { _id: userID },
         {
           $inc: { experience: 70, credits: 200 },
@@ -164,7 +172,7 @@ export default {
           if (err) {
             return res
               .status(BAD_REQUEST)
-              .json({ success: false, message: 'MongoDB Error' });
+              .json({ success: false, message: 'MongoDB Error', err });
           }
 
           if (doc) {
@@ -190,7 +198,7 @@ export default {
           if (err) {
             return res
               .status(BAD_REQUEST)
-              .json({ success: false, message: 'MongoDB Error' });
+              .json({ success: false, message: 'MongoDB Error', err });
           }
 
           if (doc) {
