@@ -77,6 +77,7 @@ const UserSchema = new Schema(
     items: {
       exp_bar: Array,
       background: Array,
+      darkmode: Array,
     },
     created_at: { type: Date, default: Date.now },
     darkmode: { type: Boolean, default: false },
