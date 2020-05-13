@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const _controllers_1 = require("@controllers/");
+const router = express_1.Router();
+router.post('/', _controllers_1.QuestController.addQuest);
+router.put('/', _controllers_1.QuestController.updateQuest);
+router.patch('/', _controllers_1.QuestController.checkedOrFinal);
+router.delete('/', _controllers_1.QuestController.deleteQuest);
+module.exports = router;
