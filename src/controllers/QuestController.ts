@@ -129,13 +129,13 @@ export default {
   checkedOrFinal: async (req: Request, res: Response) => {
     const userID = req.user.uid;
     const questID = String(req.query.id);
-    const isChecked = req.query.checked;
-    const isFinalized = req.query.finalize;
+    const isChecked = req.query.checked === 'true' ? true : false;
+    const isFinalized = req.query.finalize === 'true' ? true : false;
 
     loggingWithTitle('Is checked', isChecked);
     loggingWithTitle('Is finalized', isFinalized);
 
-    if (isFinalized === 'true') {
+    if (isFinalized === true) {
       const rawDoc = await User.findOne({ _id: userID }, { quests: 1 });
 
       let newQuestList = rawDoc?.quests.reduce(
@@ -155,7 +155,7 @@ export default {
       await User.findOneAndUpdate(
         { _id: userID },
         {
-          $inc: { experience: 70, credits: 200 },
+          $inc: { experience: 35, credits: 100 },
           $set: { quests: newQuestList[0] },
           $push: { todolist: newQuestList[1] },
         },
