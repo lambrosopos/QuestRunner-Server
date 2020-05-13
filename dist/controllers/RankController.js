@@ -6,7 +6,7 @@ const Users_1 = require("@models/Users");
 exports.default = {
     topRanks: (req, res) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
         const rankLimit = Number(req.query.top);
-        const queryResults = yield Users_1.User.find({}, { username: 1, profilePic: 1, motto: 1, experience: 1 })
+        const queryResults = yield Users_1.User.find({}, { _id: 1, username: 1, profilePic: 1, motto: 1, experience: 1 })
             .sort({ experience: -1 })
             .limit(rankLimit);
         return res.status(http_status_codes_1.OK).json(queryResults);
