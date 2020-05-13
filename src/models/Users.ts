@@ -50,6 +50,7 @@ const UserSchema = new Schema(
           price: 0,
           item_name: 'default',
           category: 'exp_bar',
+          data: '#ffff00',
           image: '',
           created_at: '2020-05-06T03:28:40.739+00:00',
           __v: 0,
@@ -75,8 +76,36 @@ const UserSchema = new Schema(
 
     todolist: Array,
     items: {
-      exp_bar: Array,
-      background: Array,
+      exp_bar: {
+        type: Array,
+        default: [
+          {
+            _id: '5eb22eb684db8e67425366e2',
+            price: 0,
+            item_name: 'default',
+            category: 'exp_bar',
+            data: '#ffff00',
+            image: '',
+            created_at: '2020-05-06T03:27:50.591+00:00',
+            __v: 0,
+          },
+        ],
+      },
+      background: {
+        type: Array,
+        default: [
+          {
+            _id: '5eb22eb684db8e67425366e2',
+            price: 0,
+            item_name: 'default',
+            category: 'background',
+            image: '',
+            data: '',
+            created_at: '2020-05-06T03:27:50.591+00:00',
+            __v: 0,
+          },
+        ],
+      },
       darkmode: Array,
     },
     created_at: { type: Date, default: Date.now },
