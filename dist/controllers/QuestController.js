@@ -111,8 +111,10 @@ exports.default = {
         loggingWithTitle('Is checked', isChecked);
         loggingWithTitle('Is finalized', isFinalized);
         if (isFinalized === true) {
-            const rawDoc = yield Users_1.User.findOne({ _id: userID }, { quests: 1 });
-            let newQuestList = rawDoc === null || rawDoc === void 0 ? void 0 : rawDoc.quests.reduce((acc, q) => {
+            const rawDoc = yield Users_1.User.findOne({ _id: userID }, { quests: 1, experience: 1, credits: 1 });
+            loggingWithTitle('Experience', rawDoc === null || rawDoc === void 0 ? void 0 : rawDoc.experience);
+            loggingWithTitle('Credits', rawDoc === null || rawDoc === void 0 ? void 0 : rawDoc.credits);
+            let newQuestList = yield (rawDoc === null || rawDoc === void 0 ? void 0 : rawDoc.quests.reduce((acc, q) => {
                 if (q._id === questID) {
                     q.checked = isChecked;
                     q.finalize = isFinalized;
@@ -122,16 +124,17 @@ exports.default = {
                     acc[0].push(q);
                     return acc;
                 }
-            }, [[], null]);
-            yield Users_1.User.findOneAndUpdate({ _id: userID }, {
-                $inc: { experience: 35, credits: 100 },
+            }, [[], null]));
+            loggingWithTitle('Quest to Add to todolist', newQuestList[1]);
+            Users_1.User.findOneAndUpdate({ _id: userID }, {
+                $inc: { experience: 70, credits: 200 },
                 $set: { quests: newQuestList[0] },
                 $push: { todolist: newQuestList[1] },
             }, { new: true }, (err, doc) => {
                 if (err) {
                     return res
                         .status(http_status_codes_1.BAD_REQUEST)
-                        .json({ success: false, message: 'MongoDB Error' });
+                        .json({ success: false, message: 'MongoDB Error', err });
                 }
                 if (doc) {
                     return res
@@ -153,7 +156,7 @@ exports.default = {
                 if (err) {
                     return res
                         .status(http_status_codes_1.BAD_REQUEST)
-                        .json({ success: false, message: 'MongoDB Error' });
+                        .json({ success: false, message: 'MongoDB Error', err });
                 }
                 if (doc) {
                     return res
