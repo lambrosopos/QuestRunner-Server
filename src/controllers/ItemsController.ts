@@ -77,14 +77,20 @@ export default {
       return doc;
     });
 
+    let featureToSet: any = {};
+
+    if (itemID === '5eb22ea484db8e67425366e0') {
+      featureToSet['$set'] = { ['active.darkmode']: item, darkmode: true };
+    } else {
+      featureToSet['$set'] = {
+        [`active.${item?.category}`]: item,
+      };
+    }
+
     const userID = req.user.uid;
     User.findByIdAndUpdate(
       userID,
-      {
-        $set: {
-          [`active.${item?.category}`]: item,
-        },
-      },
+      featureToSet,
       {
         new: true,
       },

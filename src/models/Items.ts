@@ -5,6 +5,7 @@ export type ItemDocument = mongoose.Document & {
   category: string;
   price: number;
   image: string;
+  data: string;
 };
 
 const ItemSchema = new Schema(
@@ -13,6 +14,7 @@ const ItemSchema = new Schema(
     category: String,
     price: { type: Number, default: 0 },
     image: { type: String, default: '' },
+    data: { type: String, default: '' },
     created_at: { type: Date, default: Date.now },
   },
   { collection: 'Items' }
