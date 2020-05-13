@@ -65,12 +65,17 @@ exports.default = {
                 return res.status(http_status_codes_1.BAD_REQUEST).send(err);
             return doc;
         });
-        const userID = req.user.uid;
-        Users_1.User.findByIdAndUpdate(userID, {
-            $set: {
+        let featureToSet = {};
+        if (itemID === '5eb22ea484db8e67425366e0') {
+            featureToSet['$set'] = { ['active.darkmode']: item, darkmode: true };
+        }
+        else {
+            featureToSet['$set'] = {
                 [`active.${item === null || item === void 0 ? void 0 : item.category}`]: item,
-            },
-        }, {
+            };
+        }
+        const userID = req.user.uid;
+        Users_1.User.findByIdAndUpdate(userID, featureToSet, {
             new: true,
         }, (err, doc) => {
             if (err)
