@@ -53,6 +53,9 @@ export default {
       }
     });
 
+    console.log('item');
+    console.log(item);
+
     const userID = req.user.uid;
     User.findOneAndUpdate(
       { _id: userID },

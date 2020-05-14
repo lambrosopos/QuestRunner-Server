@@ -43,6 +43,8 @@ exports.default = {
                     .json({ message: 'No item with id found' });
             }
         });
+        console.log('item');
+        console.log(item);
         const userID = req.user.uid;
         Users_1.User.findOneAndUpdate({ _id: userID }, {
             $inc: { credits: item ? -item.price : 0 },
