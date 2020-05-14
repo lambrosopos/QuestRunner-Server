@@ -48,7 +48,7 @@ const UserSchema = new Schema(
         default: {
           _id: '5eb22ee884db8e67425366eb',
           price: 0,
-          item_name: 'default',
+          item_name: 'Default',
           category: 'exp_bar',
           data: '#ffff00',
           image:
@@ -62,7 +62,7 @@ const UserSchema = new Schema(
         default: {
           _id: '5eb22eb684db8e67425366e2',
           price: 0,
-          item_name: 'default',
+          item_name: 'Default',
           category: 'background',
           image:
             'https://quest-runner.s3.ap-northeast-2.amazonaws.com/background/default.png',
@@ -84,7 +84,7 @@ const UserSchema = new Schema(
           {
             _id: '5eb22eb684db8e67425366e2',
             price: 0,
-            item_name: 'default',
+            item_name: 'Default',
             category: 'exp_bar',
             data: '#ffff00',
             image:
@@ -100,7 +100,7 @@ const UserSchema = new Schema(
           {
             _id: '5eb22eb684db8e67425366e2',
             price: 0,
-            item_name: 'default',
+            item_name: 'Default',
             category: 'background',
             image:
               'https://quest-runner.s3.ap-northeast-2.amazonaws.com/background/default.png',

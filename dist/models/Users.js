@@ -19,7 +19,7 @@ const UserSchema = new mongoose_1.Schema({
             default: {
                 _id: '5eb22ee884db8e67425366eb',
                 price: 0,
-                item_name: 'default',
+                item_name: 'Default',
                 category: 'exp_bar',
                 data: '#ffff00',
                 image: 'https://quest-runner.s3.ap-northeast-2.amazonaws.com/exp_bar/default.png',
@@ -32,7 +32,7 @@ const UserSchema = new mongoose_1.Schema({
             default: {
                 _id: '5eb22eb684db8e67425366e2',
                 price: 0,
-                item_name: 'default',
+                item_name: 'Default',
                 category: 'background',
                 image: 'https://quest-runner.s3.ap-northeast-2.amazonaws.com/background/default.png',
                 created_at: '2020-05-06T03:27:50.591+00:00',
@@ -52,7 +52,7 @@ const UserSchema = new mongoose_1.Schema({
                 {
                     _id: '5eb22eb684db8e67425366e2',
                     price: 0,
-                    item_name: 'default',
+                    item_name: 'Default',
                     category: 'exp_bar',
                     data: '#ffff00',
                     image: 'https://quest-runner.s3.ap-northeast-2.amazonaws.com/exp_bar/default.png',
@@ -67,7 +67,7 @@ const UserSchema = new mongoose_1.Schema({
                 {
                     _id: '5eb22eb684db8e67425366e2',
                     price: 0,
-                    item_name: 'default',
+                    item_name: 'Default',
                     category: 'background',
                     image: 'https://quest-runner.s3.ap-northeast-2.amazonaws.com/background/default.png',
                     data: '',
