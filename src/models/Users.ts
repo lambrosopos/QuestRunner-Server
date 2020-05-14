@@ -51,7 +51,8 @@ const UserSchema = new Schema(
           item_name: 'default',
           category: 'exp_bar',
           data: '#ffff00',
-          image: '',
+          image:
+            'https://quest-runner.s3.ap-northeast-2.amazonaws.com/exp_bar/default.png',
           created_at: '2020-05-06T03:28:40.739+00:00',
           __v: 0,
         },
@@ -63,7 +64,8 @@ const UserSchema = new Schema(
           price: 0,
           item_name: 'default',
           category: 'background',
-          image: '',
+          image:
+            'https://quest-runner.s3.ap-northeast-2.amazonaws.com/background/default.png',
           created_at: '2020-05-06T03:27:50.591+00:00',
           __v: 0,
         },
