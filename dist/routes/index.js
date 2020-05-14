@@ -13,4 +13,5 @@ router.get('/quests', jwtAuthenticator_1.authenticateJWT, _controllers_1.QuestCo
 router.get('/userinfo', jwtAuthenticator_1.authenticateJWT, _controllers_1.UserController.getInfo);
 router.post('/userlogin', _controllers_1.UserController.signin);
 router.get('/myRank', jwtAuthenticator_1.authenticateJWT, _controllers_1.RankController.myRank);
+router.post('/', jwtAuthenticator_1.authenticateJWT, _controllers_1.ItemsController.darkmode);
 exports.default = router;

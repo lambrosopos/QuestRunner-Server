@@ -66,14 +66,9 @@ exports.default = {
             return doc;
         });
         let featureToSet = {};
-        if (itemID === '5eb22ea484db8e67425366e0') {
-            featureToSet['$set'] = { ['active.darkmode']: item, darkmode: true };
-        }
-        else {
-            featureToSet['$set'] = {
-                [`active.${item === null || item === void 0 ? void 0 : item.category}`]: item,
-            };
-        }
+        featureToSet['$set'] = {
+            [`active.${item === null || item === void 0 ? void 0 : item.category}`]: item,
+        };
         const userID = req.user.uid;
         Users_1.User.findByIdAndUpdate(userID, featureToSet, {
             new: true,
@@ -128,6 +123,33 @@ exports.default = {
                 return res
                     .status(http_status_codes_1.OK)
                     .json({ success: true, message: 'Item not found' });
+            }
+        });
+    },
+    darkmode: (req, res) => {
+        const userID = req.user.uid;
+        const isDarkmode = req.query.dark === 'true' ? true : false;
+        Users_1.User.findOneAndUpdate({ _id: userID }, {
+            $set: {
+                darkmode: isDarkmode,
+            },
+        }, { new: true }, (err, doc) => {
+            if (err) {
+                return res
+                    .status(http_status_codes_1.BAD_REQUEST)
+                    .json({ success: false, message: 'MongoDB error', err });
+            }
+            if (doc) {
+                return res.status(http_status_codes_1.OK).json({
+                    success: true,
+                    message: 'Data updated',
+                    darkmode: doc.darkmode,
+                });
+            }
+            else {
+                return res
+                    .status(http_status_codes_1.NOT_FOUND)
+                    .json({ success: false, message: 'Data not found' });
             }
         });
     },
