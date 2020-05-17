@@ -1,19 +1,19 @@
-import cookieParser from 'cookie-parser';
-import morgan from 'morgan';
-import helmet from 'helmet';
-import bluebird from 'bluebird';
-import cors from 'cors';
+import cookieParser from "cookie-parser";
+import morgan from "morgan";
+import helmet from "helmet";
+import bluebird from "bluebird";
+import cors from "cors";
 
 // import flash from "express-flash";
-import express, { Request, Response, NextFunction } from 'express';
-import { BAD_REQUEST } from 'http-status-codes';
-import 'express-async-errors';
+import express, { Request, Response, NextFunction } from "express";
+import { BAD_REQUEST } from "http-status-codes";
+import "express-async-errors";
 
-import BaseRouter from './routes';
-import logger from '@shared/Logger';
+import BaseRouter from "./routes";
+import logger from "@shared/Logger";
 
 // Import env settings
-require('dotenv').config();
+require("dotenv").config();
 
 // Init expressz
 const app = express();
@@ -21,7 +21,7 @@ const app = express();
 /************************************************************************************
  *                                 Connect to MongoDB
  ***********************************************************************************/
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 mongoose.Promise = bluebird;
 
 mongoose
@@ -30,7 +30,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log('Connected to MongoDB');
+    console.log("Connected to MongoDB");
   })
   .catch((err: Error) => {
     console.log(err);
@@ -45,10 +45,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const whitelist = [
-  'http://127.0.0.1:3000',
-  'http://localhost:3000',
-  'http://127.0.0.1:3001',
-  'http://localhost:3001',
+  "http://127.0.0.1:3000",
+  "http://localhost:3000",
+  "http://127.0.0.1:3001",
+  "http://localhost:3001",
+  "http://qrunner-client.s3-website.ap-northeast-2.amazonaws.com/",
 ];
 
 app.use(
@@ -57,29 +58,28 @@ app.use(
       // allow requests with no origin
       if (!origin) return callback(null, true);
       if (whitelist.indexOf(origin) === -1) {
-        const message =
-          "The CORS policy for this origin doesn't " +
-          'allow access from the particular origin.';
+        const message = "The CORS policy for this origin doesn't " +
+          "allow access from the particular origin.";
         return callback(new Error(message), false);
       }
       return callback(null, true);
     },
     credentials: true,
-  })
+  }),
 );
 
 // Show routes called in console during development
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
 }
 
 // Security
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === "production") {
   app.use(helmet());
 }
 
 // Add APIs
-app.use('/', BaseRouter);
+app.use("/", BaseRouter);
 
 // Print API errors
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
