@@ -29,6 +29,14 @@ mongoose
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use(cookie_parser_1.default());
+app.use((err, req, res, next) => {
+    console.log("Request URL:", req.originalUrl);
+    next();
+}, function (req, res, next) {
+    console.log("Request Type:", req.method);
+    console.log("Request Body :", req.body);
+    next();
+});
 const whitelist = [
     "http://127.0.0.1:3000",
     "http://localhost:3000",
