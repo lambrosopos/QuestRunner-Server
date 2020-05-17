@@ -8,6 +8,7 @@ import {
 } from 'http-status-codes';
 import { User, UserDocument } from '@models/Users';
 import { Item, ItemDocument } from '@models/Items';
+import { any } from 'bluebird';
 
 export default {
   myItems: (req: Request, res: Response) => {
@@ -52,6 +53,9 @@ export default {
       }
     });
 
+    console.log('item');
+    console.log(item);
+
     const userID = req.user.uid;
     User.findOneAndUpdate(
       { _id: userID },
@@ -77,14 +81,16 @@ export default {
       return doc;
     });
 
+    let featureToSet: any = {};
+
+    featureToSet['$set'] = {
+      [`active.${item?.category}`]: item,
+    };
+
     const userID = req.user.uid;
     User.findByIdAndUpdate(
       userID,
-      {
-        $set: {
-          [`active.${item?.category}`]: item,
-        },
-      },
+      featureToSet,
       {
         new: true,
       },
@@ -137,5 +143,38 @@ export default {
           .json({ success: true, message: 'Item not found' });
       }
     });
+  },
+  darkmode: (req: Request, res: Response) => {
+    const userID = req.user.uid;
+    const isDarkmode = req.query.dark === 'true' ? true : false;
+
+    User.findOneAndUpdate(
+      { _id: userID },
+      {
+        $set: {
+          darkmode: isDarkmode,
+        },
+      },
+      { new: true },
+      (err: any, doc: any) => {
+        if (err) {
+          return res
+            .status(BAD_REQUEST)
+            .json({ success: false, message: 'MongoDB error', err });
+        }
+
+        if (doc) {
+          return res.status(OK).json({
+            success: true,
+            message: 'Data updated',
+            darkmode: doc.darkmode,
+          });
+        } else {
+          return res
+            .status(NOT_FOUND)
+            .json({ success: false, message: 'Data not found' });
+        }
+      }
+    );
   },
 };

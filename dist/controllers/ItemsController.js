@@ -43,6 +43,8 @@ exports.default = {
                     .json({ message: 'No item with id found' });
             }
         });
+        console.log('item');
+        console.log(item);
         const userID = req.user.uid;
         Users_1.User.findOneAndUpdate({ _id: userID }, {
             $inc: { credits: item ? -item.price : 0 },
@@ -65,12 +67,12 @@ exports.default = {
                 return res.status(http_status_codes_1.BAD_REQUEST).send(err);
             return doc;
         });
+        let featureToSet = {};
+        featureToSet['$set'] = {
+            [`active.${item === null || item === void 0 ? void 0 : item.category}`]: item,
+        };
         const userID = req.user.uid;
-        Users_1.User.findByIdAndUpdate(userID, {
-            $set: {
-                [`active.${item === null || item === void 0 ? void 0 : item.category}`]: item,
-            },
-        }, {
+        Users_1.User.findByIdAndUpdate(userID, featureToSet, {
             new: true,
         }, (err, doc) => {
             if (err)
@@ -123,6 +125,33 @@ exports.default = {
                 return res
                     .status(http_status_codes_1.OK)
                     .json({ success: true, message: 'Item not found' });
+            }
+        });
+    },
+    darkmode: (req, res) => {
+        const userID = req.user.uid;
+        const isDarkmode = req.query.dark === 'true' ? true : false;
+        Users_1.User.findOneAndUpdate({ _id: userID }, {
+            $set: {
+                darkmode: isDarkmode,
+            },
+        }, { new: true }, (err, doc) => {
+            if (err) {
+                return res
+                    .status(http_status_codes_1.BAD_REQUEST)
+                    .json({ success: false, message: 'MongoDB error', err });
+            }
+            if (doc) {
+                return res.status(http_status_codes_1.OK).json({
+                    success: true,
+                    message: 'Data updated',
+                    darkmode: doc.darkmode,
+                });
+            }
+            else {
+                return res
+                    .status(http_status_codes_1.NOT_FOUND)
+                    .json({ success: false, message: 'Data not found' });
             }
         });
     },

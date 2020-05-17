@@ -1,7 +1,12 @@
 import { Router } from 'express';
 
 // For simple get routes
-import { QuestController, UserController, RankController } from '@controllers/';
+import {
+  QuestController,
+  UserController,
+  RankController,
+  ItemsController,
+} from '@controllers/';
 import { authenticateJWT } from '../middlewares/jwtAuthenticator';
 
 // Init router and path
@@ -20,5 +25,6 @@ router.get('/userinfo', authenticateJWT, UserController.getInfo);
 router.post('/userlogin', UserController.signin);
 router.get('/myRank', authenticateJWT, RankController.myRank);
 
+router.post('/', authenticateJWT, ItemsController.darkmode);
 // Export the base-router
 export default router;
