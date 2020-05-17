@@ -39,10 +39,18 @@ mongoose
 /************************************************************************************
  *                              Set basic express settings
  ***********************************************************************************/
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.log("Request URL:", req.originalUrl);
+  next();
+}, function (req: Request, res: Response, next: NextFunction) {
+  console.log("Request Type:", req.method);
+  console.log("Request Body :", req.body);
+  next();
+});
 
 const whitelist = [
   "http://127.0.0.1:3000",
